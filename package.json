@@ -2,11 +2,13 @@
   "name": "nodejs-microservices",
   "version": "1.0.0",
   "scripts": {
-    "start": "docker-compose up -d && nodemon services/discovery-service/index.js & nodemon services/api-gateway/index.js & nodemon services/order-service/index.js & nodemon services/inventory-service/index.js & nodemon services/projection-service/index.js & nodemon services/saga-orchestrator/index.js"
+    "start": "docker-compose up -d && nodemon services/discovery-service/index.js & nodemon services/api-gateway/index.js & nodemon services/order-service/index.js & nodemon services/inventory-service/index.js & nodemon services/projection-service/index.js & nodemon services/saga-orchestrator/index.js",
+    "simulate": "node test/simulate.js"
   },
   "dependencies": {
     "axios": "^1.12.2",
     "dotenv": "^17.2.3",
+    "mongodb": "^5.9.2",
     "nodemon": "^3.1.10"
   }
 }
