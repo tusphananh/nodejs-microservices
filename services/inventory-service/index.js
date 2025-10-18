@@ -2,7 +2,7 @@
 const amqplib = require("amqplib");
 const { MongoClient } = require("mongodb");
 const CircuitBreaker = require("opossum");
-const { registerService } = require("../../common/lib");
+const { registerService, autoRegister } = require("../../common/lib");
 const { v4: uuidv4 } = require("uuid");
 
 const PORT = process.env.PORT || 4200;
@@ -16,6 +16,12 @@ registerService(DISCOVERY, {
   url: `http://localhost:${PORT}`,
   instanceId,
 }).catch(() => {});
+
+autoRegister(DISCOVERY, {
+  name: "inventory-service",
+  url: `http://localhost:${PORT}`,
+  instanceId,
+});
 
 let channel, eventsDb, inventory;
 

@@ -1,7 +1,11 @@
 // services/api-gateway/index.js
 const express = require("express");
 const axios = require("axios");
-const { registerService, getService } = require("../../common/lib");
+const {
+  registerService,
+  getService,
+  autoRegister,
+} = require("../../common/lib");
 const CircuitBreaker = require("opossum");
 const { v4: uuidv4 } = require("uuid");
 
@@ -16,6 +20,12 @@ const SERVICE_NAME = "api-gateway";
 
 // register at start
 registerService(DISCOVERY, {
+  name: SERVICE_NAME,
+  url: `http://localhost:${PORT}`,
+  instanceId,
+});
+
+autoRegister(DISCOVERY, {
   name: SERVICE_NAME,
   url: `http://localhost:${PORT}`,
   instanceId,
@@ -56,10 +66,5 @@ app.post("/orders", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  registerService(DISCOVERY, {
-    name: SERVICE_NAME,
-    url: `http://localhost:${PORT}`,
-    instanceId,
-  }).catch(() => {});
   console.log(`API Gateway listening ${PORT}`);
 });

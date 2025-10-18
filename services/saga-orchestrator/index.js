@@ -1,6 +1,6 @@
 // services/saga-orchestrator/index.js
 const amqplib = require("amqplib");
-const { registerService } = require("../../common/lib");
+const { registerService, autoRegister } = require("../../common/lib");
 const { v4: uuidv4 } = require("uuid");
 
 const RABBIT = process.env.RABBIT || "amqp://guest:guest@localhost:5672";
@@ -11,6 +11,12 @@ registerService(DISCOVERY, {
   url: `http://localhost:4300`,
   instanceId,
 }).catch(() => {});
+
+autoRegister(DISCOVERY, {
+  name: "saga-orchestrator",
+  url: `http://localhost:4300`,
+  instanceId,
+});
 
 async function start() {
   const conn = await amqplib.connect(RABBIT);

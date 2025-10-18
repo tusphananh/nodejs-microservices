@@ -12,4 +12,15 @@ async function getService(discoveryUrl, name) {
   return res.data;
 }
 
-module.exports = { registerService, getService };
+function autoRegister(discoveryUrl, service, interval = 10000) {
+  setInterval(() => {
+    console.log(
+      `Auto Registering Discovery Service [${service.name}] heartbeat`
+    );
+    registerService(discoveryUrl, service).catch((err) =>
+      console.error(`[${service}] heartbeat failed`, err.message)
+    );
+  }, interval);
+}
+
+module.exports = { registerService, getService, autoRegister };

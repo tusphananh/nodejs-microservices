@@ -2,7 +2,7 @@
 const express = require("express");
 const { v4: uuidv4 } = require("uuid");
 const amqplib = require("amqplib");
-const { registerService } = require("../../common/lib");
+const { registerService, autoRegister } = require("../../common/lib");
 const { MongoClient } = require("mongodb");
 const pLimit = require("p-limit").default;
 
@@ -66,6 +66,12 @@ app.post("/orders", async (req, res) => {
 // health and register
 app.get("/health", (req, res) => res.send({ status: "ok" }));
 registerService(DISCOVERY, {
+  name: "order-service",
+  url: `http://localhost:${PORT}`,
+  instanceId,
+});
+
+autoRegister(DISCOVERY, {
   name: "order-service",
   url: `http://localhost:${PORT}`,
   instanceId,
