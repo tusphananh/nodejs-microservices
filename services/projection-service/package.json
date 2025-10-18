@@ -1,0 +1,9 @@
+{
+  "name": "projection-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "amqplib": "^0.10.3",
+    "mongodb": "^5.6.0"
+  }
+}

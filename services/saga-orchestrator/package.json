@@ -1,0 +1,9 @@
+{
+  "name": "saga-orchestrator",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "amqplib": "^0.10.3",
+    "uuid": "^9.0.0"
+  }
+}
