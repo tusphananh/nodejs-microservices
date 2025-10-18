@@ -2,9 +2,11 @@
   "name": "nodejs-microservices",
   "version": "1.0.0",
   "scripts": {
-    "start": "node services/discovery-service/index.js & node services/api-gateway/index.js & node services/order-service/index.js & node services/inventory-service/index.js & node services/projection-service/index.js & node services/saga-orchestrator/index.js"
+    "start": "docker-compose up -d && node services/discovery-service/index.js & node services/api-gateway/index.js & node services/order-service/index.js & node services/inventory-service/index.js & node services/projection-service/index.js & node services/saga-orchestrator/index.js"
   },
   "dependencies": {
-    "dotenv": "^16.3.1"
+    "axios": "^1.12.2",
+    "dotenv": "^17.2.3",
+    "nodemon": "^3.1.10"
   }
 }

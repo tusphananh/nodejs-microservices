@@ -28,7 +28,7 @@ node index.js
 Create an order via the API gateway:
 
 ```bash
-curl -X POST http://localhost:4000/orders
+curl -X POST http://localhost:5005/orders
  -H "Content-Type: application/json" -d '{"items":[{"sku":"A", "qty":1},{"sku":"B","qty":2}]}'
 ```
 

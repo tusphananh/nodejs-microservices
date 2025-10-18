@@ -8,7 +8,7 @@ const { v4: uuidv4 } = require("uuid");
 const app = express();
 app.use(express.json());
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5005;
 const DISCOVERY = process.env.DISCOVERY_URL || "http://localhost:3000";
 
 const instanceId = uuidv4();

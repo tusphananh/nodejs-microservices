@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require("uuid");
 const amqplib = require("amqplib");
 const { registerService } = require("../../common/lib");
 const { MongoClient } = require("mongodb");
-const pLimit = require("p-limit");
+const pLimit = require("p-limit").default;
 
 const PORT = process.env.PORT || 4100;
 const DISCOVERY = process.env.DISCOVERY_URL || "http://localhost:3000";
