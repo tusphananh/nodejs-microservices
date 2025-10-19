@@ -2,7 +2,7 @@
   "name": "nodejs-microservices",
   "version": "1.0.0",
   "scripts": {
-    "start": " pnpm -r start",
+    "start": "docker-compose up -d && pnpm --parallel start",
     "simulate": "node test/simulate.js"
   },
   "dependencies": {
