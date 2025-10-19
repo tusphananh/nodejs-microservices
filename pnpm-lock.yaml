@@ -60,6 +60,21 @@ importers:
         specifier: ^9.0.0
         version: 9.0.1
 
+  services/notification-service:
+    dependencies:
+      amqplib:
+        specifier: ^0.10.3
+        version: 0.10.9
+      express:
+        specifier: ^4.18.2
+        version: 4.21.2
+      mongodb:
+        specifier: ^5.7.0
+        version: 5.9.2
+      uuid:
+        specifier: ^9.0.0
+        version: 9.0.1
+
   services/order-service:
     dependencies:
       amqplib:
@@ -74,6 +89,21 @@ importers:
       p-limit:
         specifier: ^4.0.0
         version: 4.0.0
+      uuid:
+        specifier: ^9.0.0
+        version: 9.0.1
+
+  services/payment-service:
+    dependencies:
+      amqplib:
+        specifier: ^0.10.3
+        version: 0.10.9
+      express:
+        specifier: ^4.18.2
+        version: 4.21.2
+      mongodb:
+        specifier: ^5.7.0
+        version: 5.9.2
       uuid:
         specifier: ^9.0.0
         version: 9.0.1

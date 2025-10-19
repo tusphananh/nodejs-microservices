@@ -2,7 +2,7 @@
   "name": "nodejs-microservices",
   "version": "1.0.0",
   "scripts": {
-    "start": "docker-compose up -d && nodemon services/discovery-service/index.js & nodemon services/api-gateway/index.js & nodemon services/order-service/index.js & nodemon services/inventory-service/index.js & nodemon services/projection-service/index.js & nodemon services/saga-orchestrator/index.js",
+    "start": " pnpm -r start",
     "simulate": "node test/simulate.js"
   },
   "dependencies": {

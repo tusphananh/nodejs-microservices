@@ -1,12 +1,14 @@
 {
-  "name": "saga-orchestrator",
+  "name": "payment-service",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js"
   },
   "dependencies": {
+    "express": "^4.18.2",
+    "uuid": "^9.0.0",
     "amqplib": "^0.10.3",
-    "uuid": "^9.0.0"
+    "mongodb": "^5.7.0"
   }
 }
