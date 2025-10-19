@@ -12,7 +12,7 @@ async function getService(discoveryUrl, name) {
   return res.data;
 }
 
-function autoRegister(discoveryUrl, service, interval = 10000) {
+function autoRegister(discoveryUrl, service, interval = 60000) {
   setInterval(() => {
     console.log(
       `Auto Registering Discovery Service [${service.name}] heartbeat`

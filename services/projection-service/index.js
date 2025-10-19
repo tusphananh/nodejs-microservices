@@ -27,10 +27,16 @@ async function start() {
       await orders.insertOne({
         id: data.id,
         items: data.order.items,
+        totalPrice:
+          data.order.totalPrice ||
+          (data.order.items || []).reduce(
+            (s, i) => s + (i.qty || 0) * (i.price || 10),
+            0
+          ),
         status: "CREATED",
         createdAt: new Date(),
       });
-    } else if (rk === "inventory.reserved") {
+    } else if (rk === "order.confirmed") {
       await orders.updateOne(
         { id: data.id },
         { $set: { status: "CONFIRMED" } }
@@ -44,6 +50,11 @@ async function start() {
       await orders.updateOne(
         { id: data.id },
         { $set: { status: "CANCELLED" } }
+      );
+    } else if (rk === "order.failed_payment") {
+      await orders.updateOne(
+        { id: data.id },
+        { $set: { status: "FAILED_PAYMENT" } }
       );
     }
     ch.ack(msg);

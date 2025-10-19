@@ -87,6 +87,78 @@ async function main() {
   console.log(`\n📦 Inventory after saga compensation:`);
   console.table(await inventoryDb.find().toArray());
 
+  // STEP 6: Check gateway-accessible balance before payments
+  console.log(`\n💰 Checking initial balance via API Gateway...`);
+  try {
+    const balBefore = await axios.get(`${API_GATEWAY}/balance`);
+    console.log(`Initial balance:`, balBefore.data);
+  } catch (err) {
+    console.log(
+      `Failed to read balance via gateway:`,
+      err.response?.data || err.message
+    );
+  }
+
+  // STEP 7: Make a successful payment for the successful order via gateway
+  console.log(
+    `\n💳 Making a successful payment for order ${okId} via gateway...`
+  );
+  try {
+    const successPayment = await axios.post(`${API_GATEWAY}/payments`, {
+      orderId: okId,
+      items: [{ sku: "A", qty: 2 }],
+      amount: 20, // 2 * $10 each
+    });
+    console.log(`Payment response:`, successPayment.data);
+  } catch (err) {
+    console.log(`Payment failed:`, err.response?.data || err.message);
+  }
+
+  // STEP 8: Check balance after successful payment
+  console.log(`\n💰 Checking balance after successful payment...`);
+  try {
+    const balAfter = await axios.get(`${API_GATEWAY}/balance`);
+    console.log(`Balance after payment:`, balAfter.data);
+  } catch (err) {
+    console.log(
+      `Failed to read balance via gateway:`,
+      err.response?.data || err.message
+    );
+  }
+
+  // STEP 9: Attempt an insufficient payment amount (should be rejected)
+  console.log(
+    `\n💸 Attempting insufficient payment for order ${failId} via gateway...`
+  );
+  try {
+    const badPayment = await axios.post(`${API_GATEWAY}/payments`, {
+      orderId: failId,
+      items: [{ sku: "B", qty: 2 }],
+      amount: 10, // intentionally too low
+    });
+    console.log(`Unexpected success:`, badPayment.data);
+  } catch (err) {
+    console.log(`Expected payment failure:`, err.response?.data || err.message);
+  }
+
+  // STEP 10: Trigger a service-insufficient-funds case by attempting a very large payment
+  console.log(
+    `\n🚫 Attempting very large payment to trigger service insufficient funds...`
+  );
+  try {
+    const hugePayment = await axios.post(`${API_GATEWAY}/payments`, {
+      orderId: okId,
+      items: [{ sku: "A", qty: 1 }],
+      amount: 200000, // very large amount to exceed service balance
+    });
+    console.log(`Unexpected success:`, hugePayment.data);
+  } catch (err) {
+    console.log(
+      `Expected service-funds failure:`,
+      err.response?.data || err.message
+    );
+  }
+
   // STEP 6: Simulate Circuit Breaker (call repeatedly to failing service)
   console.log(
     `\n⚡ Simulating circuit breaker by triggering failing orders repeatedly...`

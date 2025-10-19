@@ -36,8 +36,20 @@ async function connect() {
   inventory = db.collection("inventory");
   eventsDb = client.db("eventstore").collection("events");
 
+  // Initialize inventory with 5 items if empty
+  const items = await inventory.find().toArray();
+  if (items.length === 0) {
+    await inventory.insertMany([
+      { sku: "ITEM1", qty: 5, price: 10 },
+      { sku: "ITEM2", qty: 5, price: 10 },
+      { sku: "ITEM3", qty: 5, price: 10 },
+      { sku: "ITEM4", qty: 5, price: 20000 },
+    ]);
+  }
+
   const q = await channel.assertQueue("", { exclusive: true });
   await channel.bindQueue(q.queue, "events", "order.*");
+  await channel.bindQueue(q.queue, "events", "inventory.*");
   channel.consume(q.queue, async (msg) => {
     if (!msg) return;
     const routing = msg.fields.routingKey;
@@ -45,6 +57,8 @@ async function connect() {
     try {
       if (routing === "order.created") {
         await handleOrderCreated(payload);
+      } else if (routing === "inventory.release") {
+        await handleInventoryRelease(payload);
       }
       channel.ack(msg);
     } catch (e) {
@@ -104,6 +118,27 @@ async function handleOrderCreated({ id, order }) {
       Buffer.from(JSON.stringify({ id, reason: err.message })),
       { persistent: true }
     );
+  }
+}
+
+async function handleInventoryRelease({ id, items }) {
+  try {
+    // Release inventory by increasing quantities back
+    for (const item of items) {
+      await inventory.updateOne({ sku: item.sku }, { $inc: { qty: item.qty } });
+    }
+
+    // Log the release event
+    await eventsDb.insertOne({
+      streamId: id,
+      type: "InventoryReleased",
+      payload: { id, items },
+      timestamp: new Date(),
+    });
+
+    console.log("inventory released for", id);
+  } catch (err) {
+    console.error("release failed", err.message);
   }
 }
 

@@ -25,6 +25,7 @@ async function start() {
   const q = await ch.assertQueue("", { exclusive: true });
   await ch.bindQueue(q.queue, "events", "order.*");
   await ch.bindQueue(q.queue, "events", "inventory.*");
+  await ch.bindQueue(q.queue, "events", "payment.*");
 
   ch.consume(q.queue, async (msg) => {
     if (!msg) return;
@@ -44,14 +45,43 @@ async function start() {
       );
       console.log("Saga: order.cancel published for", data.id);
     } else if (rk === "inventory.reserved") {
-      // continue: publish order.confirmed
+      // After inventory is reserved, request payment
+      ch.publish(
+        "events",
+        "payment.request",
+        Buffer.from(
+          JSON.stringify({
+            orderId: data.id,
+            items: data.items,
+            amount: data.items.reduce(
+              (total, item) => total + item.qty * item.price,
+              0
+            ),
+          })
+        ),
+        { persistent: true }
+      );
+    } else if (rk === "payment.failed") {
+      ch.publish(
+        "events",
+        "order.failed_payment",
+        Buffer.from(
+          JSON.stringify({
+            id: data.payment.orderId,
+            reason: data.payment.reason,
+          })
+        ),
+        { persistent: true }
+      );
+    } else if (rk === "payment.processed") {
+      // Payment successful, confirm order
       ch.publish(
         "events",
         "order.confirmed",
-        Buffer.from(JSON.stringify({ id: data.id })),
+        Buffer.from(JSON.stringify({ id: data.payment.orderId })),
         { persistent: true }
       );
-      console.log("Saga: order.confirmed for", data.id);
+      console.log("Saga: order.confirmed for", data);
     }
     ch.ack(msg);
   });
