@@ -11,6 +11,7 @@ Currently, two official plugins are available:
 
 f2.1
 f2.2
+f2.3
 The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
 
 ## Expanding the ESLint configuration
