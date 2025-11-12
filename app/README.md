@@ -14,6 +14,7 @@ The React Compiler is currently not compatible with SWC. See [this issue](https:
 ## Expanding the ESLint configuration
 
 f1.1
+f1.2
 If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
 ```js
